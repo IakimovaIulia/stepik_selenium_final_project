@@ -1,5 +1,8 @@
+import time
+
 import pytest
 
+from pages.locators import ProductPageLocators
 from .pages.product_page import ProductPage
 
 main_link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
@@ -27,3 +30,28 @@ def test_guest_can_add_product_to_basket(browser, promo):
     page.solve_quiz_and_get_code()
     page.should_be_message_with_name_for_added_product(name)
     page.should_be_message_with_price_for_added_product(price)
+
+
+def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):
+    link = "http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/?promo=newYear"
+    page = ProductPage(browser, link)
+    page.open()
+    page.add_to_basket()
+    page.solve_quiz_and_get_code()
+    assert page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE_PRODUCT_NAME)
+
+
+def test_guest_cant_see_success_message(browser):
+    link = "http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/?promo=newYear"
+    page = ProductPage(browser, link)
+    page.open()
+    assert page.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE_PRODUCT_NAME)
+
+
+def test_message_disappeared_after_adding_product_to_basket(browser):
+    link = "http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/?promo=newYear"
+    page = ProductPage(browser, link)
+    page.open()
+    page.add_to_basket()
+    page.solve_quiz_and_get_code()
+    assert page.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE_PRODUCT_NAME)
